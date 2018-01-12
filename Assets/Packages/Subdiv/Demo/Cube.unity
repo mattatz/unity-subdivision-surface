@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 451da1c46715d29478524fa7d2ab0f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  details: 1
+  details: 2
 --- !u!4 &302298411
 Transform:
   m_ObjectHideFlags: 0
@@ -569,7 +569,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   subdivCompute: {fileID: 7200000, guid: 8952c95e085a02544bff9c3aac03e0ef, type: 3}
-  details: 1
+  details: 4
 --- !u!4 &2134529982
 Transform:
   m_ObjectHideFlags: 0
