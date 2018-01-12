@@ -1,0 +1,118 @@
+﻿#pragma kernel Subdivide
+
+#define THREAD [numthreads(8, 1, 1)]
+
+struct Edge
+{
+    int v0, v1;
+};
+
+struct Triangle
+{
+    int v0, v1, v2;
+    int e0, e1, e2;
+};
+
+StructuredBuffer<float3> _VertexBuffer;
+StructuredBuffer<Edge> _EdgeBuffer;
+StructuredBuffer<Triangle> _TriangleBuffer;
+RWStructuredBuffer<float3> _SubdivBuffer;
+
+int _VertexCount, _EdgeCount, _TriangleCount;
+int _SubdivCount;
+
+int GetOtherPoint(Edge e, Triangle tri)
+{
+    int iv0 = e.v0;
+    int iv1 = e.v1;
+    if (tri.v0 != iv0 && tri.v0 != iv1) {
+        return tri.v0;
+    } else if (tri.v1 != iv0 && tri.v1 != iv1) {
+        return tri.v1;
+    }
+    return tri.v2;
+}
+
+float3 GetEdgePoint(int ie)
+{
+    Edge e = _EdgeBuffer[ie];
+    float3 v0p = _VertexBuffer[e.v0];
+    float3 v1p = _VertexBuffer[e.v1];
+
+    int itc = 0;
+    int its[2];
+    for (int it = 0; it < _TriangleCount; it++)
+    {
+        Triangle tri = _TriangleBuffer[it];
+        if (tri.e0 == ie || tri.e1 == ie || tri.e2 == ie) {
+            its[itc] = it;
+            itc++;
+        }
+    }
+
+    if (itc < 2) {
+        return (v0p + v1p) * 0.5;
+    }
+
+    const float alpha = 3.0 / 8.0;
+    const float beta = 1.0 / 8.0;
+    float3 lp = _VertexBuffer[GetOtherPoint(e, _TriangleBuffer[its[0]])];
+    float3 rp = _VertexBuffer[GetOtherPoint(e, _TriangleBuffer[its[1]])];
+    return (v0p + v1p) * alpha + (lp + rp) * beta;
+}
+
+#define PI2 6.28318530718
+
+float3 GetVertexPoint(int iv)
+{
+    const float k0 = (3.0 / 4.0);
+    const float k1 = (1.0 / 8.0);
+    const float k2 = (5.0 / 8.0);
+    const float k3 = (3.0 / 8.0);
+    const float k4 = (1.0 / 4.0);
+
+    // count adjacencies
+    int cadj = 0;
+    float3 adjp = float3(0, 0, 0);
+    for (int i = 0; i < _EdgeCount; i++)
+    {
+        Edge e = _EdgeBuffer[i];
+        if (e.v0 == iv) {
+            adjp += _VertexBuffer[e.v1];
+            cadj++;
+        } else if (e.v1 == iv) {
+            adjp += _VertexBuffer[e.v0];
+            cadj++;
+        }
+    }
+
+    float3 v = _VertexBuffer[iv];
+
+    if (cadj < 3) {
+        return k0 * v + k1 * adjp;
+    }
+
+    float invc = 1.0 / (float)cadj;
+    // float alpha = (cadj == 3) ? (3.0 / 16.0) : ((1.0 / cadj) * (k2 - pow(k3 + k4 * cos(PI2 / cadj), 2.0)));
+    float alpha = (cadj == 3) ? (3.0 / 16.0) : ((1.0 * invc) * (k2 - pow(k3 + k4 * cos(PI2 * invc), 2.0)));
+    return (1.0 - cadj * alpha) * v + alpha * adjp;
+}
+
+THREAD
+void Subdivide (uint3 id : SV_DispatchThreadID)
+{
+    int index = (int)id.x;
+    if (index >= _SubdivCount)
+    {
+        return;
+    }
+
+    float3 p;
+    if (index < _VertexCount)
+    {
+        p = GetVertexPoint(index);
+    } else {
+        p = GetEdgePoint(index - _VertexCount);
+    }
+    _SubdivBuffer[index] = p;
+}

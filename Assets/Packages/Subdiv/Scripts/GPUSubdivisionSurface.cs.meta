@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 61ac8b50e299fae4b8dcaeb064d5d410
+timeCreated: 1515748871
+licenseType: Pro
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - subdivCompute: {fileID: 7200000, guid: 8952c95e085a02544bff9c3aac03e0ef, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
