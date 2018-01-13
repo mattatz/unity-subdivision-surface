@@ -8,17 +8,17 @@ namespace Subdiv
     public class Edge
     {
         public Vertex a, b;
-        public List<Face> faces;
+        public List<Triangle> faces;
         public Vertex ept;
 
         public Edge(Vertex a, Vertex b)
         {
             this.a = a;
             this.b = b;
-            this.faces = new List<Face>();
+            this.faces = new List<Triangle>();
         }
 
-        public void AddFace(Face f)
+        public void AddTriangle(Triangle f)
         {
             faces.Add(f);
         }

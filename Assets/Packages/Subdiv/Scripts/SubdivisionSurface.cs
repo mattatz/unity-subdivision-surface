@@ -13,27 +13,19 @@ namespace Subdiv
     //      http://www.cs.cmu.edu/afs/cs/academic/class/15462-s14/www/lec_slides/Subdivision.pdf
     //      https://pages.mtu.edu/~shene/COURSES/cs3621/SLIDES/Subdivision.pdf
     //      https://graphics.stanford.edu/~mdfisher/subdivision.html
-    public class SubdivisionSurface : MonoBehaviour
+    public class SubdivisionSurface 
     {
-        [SerializeField, Range(1, 5)] protected int details = 1;
 
-        void Start()
-        {
-            var filter = GetComponent<MeshFilter>();
-            var source = filter.mesh;
-            var mesh = Subdivide(Weld(source, float.Epsilon, source.bounds.size.x), details);
-            filter.sharedMesh = mesh;
-        }
-
-        public Mesh Subdivide(Mesh source, int details = 1)
+        public static Mesh Subdivide(Mesh source, int details = 1, bool weld = false)
         {
             var model = new Model(source);
+            var divider = new SubdivisionSurface();
 
             for (int i = 0; i < details; i++) {
-                model = Divide(model);
+                model = divider.Divide(model);
             }
 
-            var mesh = model.Build(false);
+            var mesh = model.Build(weld);
             return mesh;
         }
 
@@ -129,12 +121,12 @@ namespace Subdiv
             return ne;
         }
 
-        public Model Divide(Model model)
+        Model Divide(Model model)
         {
             var nmodel = new Model();
-            for (int i = 0, n = model.faces.Count; i < n; i++)
+            for (int i = 0, n = model.triangles.Count; i < n; i++)
             {
-                var f = model.faces[i];
+                var f = model.triangles[i];
 
                 var ne0 = GetEdgePoint(f.e0);
                 var ne1 = GetEdgePoint(f.e1);
@@ -144,10 +136,10 @@ namespace Subdiv
                 var nv1 = GetVertexPoint(f.v1);
                 var nv2 = GetVertexPoint(f.v2);
 
-                nmodel.AddFace(nv0, ne0, ne2);
-                nmodel.AddFace(ne0, nv1, ne1);
-                nmodel.AddFace(ne0, ne1, ne2);
-                nmodel.AddFace(ne2, ne1, nv2);
+                nmodel.AddTriangle(nv0, ne0, ne2);
+                nmodel.AddTriangle(ne0, nv1, ne1);
+                nmodel.AddTriangle(ne0, ne1, ne2);
+                nmodel.AddTriangle(ne2, ne1, nv2);
             }
             return nmodel;
         }

@@ -67,9 +67,10 @@ float3 GetVertexPoint(int iv)
 {
     const float k0 = (3.0 / 4.0);
     const float k1 = (1.0 / 8.0);
-    const float k2 = (5.0 / 8.0);
-    const float k3 = (3.0 / 8.0);
-    const float k4 = (1.0 / 4.0);
+    const float k2 = (3.0 / 16.0);
+    const float k3 = (5.0 / 8.0);
+    const float k4 = (3.0 / 8.0);
+    const float k5 = (1.0 / 4.0);
 
     // count adjacencies
     int cadj = 0;
@@ -93,8 +94,7 @@ float3 GetVertexPoint(int iv)
     }
 
     float invc = 1.0 / (float)cadj;
-    // float alpha = (cadj == 3) ? (3.0 / 16.0) : ((1.0 / cadj) * (k2 - pow(k3 + k4 * cos(PI2 / cadj), 2.0)));
-    float alpha = (cadj == 3) ? (3.0 / 16.0) : ((1.0 * invc) * (k2 - pow(k3 + k4 * cos(PI2 * invc), 2.0)));
+    float alpha = (cadj == 3) ? k2 : ((1.0 * invc) * (k3 - pow(k4 + k5 * cos(PI2 * invc), 2.0)));
     return (1.0 - cadj * alpha) * v + alpha * adjp;
 }
 

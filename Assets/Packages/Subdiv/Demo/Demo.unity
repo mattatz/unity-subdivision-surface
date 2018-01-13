@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 302298409}
   - component: {fileID: 302298412}
   m_Layer: 0
-  m_Name: LoopSubdivisionSurface
+  m_Name: SubdivisionSurface
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -217,10 +217,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 302298408}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 451da1c46715d29478524fa7d2ab0f44, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d32f861b440eab4d9ac44ffba823c46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   details: 1
+  weld: 0
 --- !u!4 &302298411
 Transform:
   m_ObjectHideFlags: 0
@@ -280,7 +281,7 @@ GameObject:
   - component: {fileID: 373964016}
   - component: {fileID: 373964015}
   m_Layer: 0
-  m_Name: LoopSubdivisionSurface
+  m_Name: SubdivisionSurface
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -335,10 +336,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 373964014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 451da1c46715d29478524fa7d2ab0f44, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d32f861b440eab4d9ac44ffba823c46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   details: 2
+  weld: 0
 --- !u!4 &373964018
 Transform:
   m_ObjectHideFlags: 0
@@ -469,7 +471,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 3.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -491,10 +493,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 801320613}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: -5}
+  m_LocalRotation: {x: 0.15869215, y: -0.33650532, z: 0.057641927, w: 0.92642236}
+  m_LocalPosition: {x: 2.38, y: 3.33, z: -2.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 19.44, y: -39.925003, z: 0}

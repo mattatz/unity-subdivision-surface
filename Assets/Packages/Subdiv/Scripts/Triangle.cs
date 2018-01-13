@@ -5,12 +5,12 @@ using UnityEngine;
 namespace Subdiv
 {
 
-    public class Face
+    public class Triangle
     {
         public Vertex v0, v1, v2;
         public Edge e0, e1, e2;
 
-        public Face(
+        public Triangle(
             Vertex v0, Vertex v1, Vertex v2,
             Edge e0, Edge e1, Edge e2
         )

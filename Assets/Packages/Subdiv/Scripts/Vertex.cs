@@ -9,14 +9,14 @@ namespace Subdiv
     {
         public Vector3 p;
         public List<Edge> edges;
-        public List<Face> faces;
+        public List<Triangle> triangles;
         public Vertex updated;
 
         public Vertex(Vector3 p)
         {
             this.p = p;
             this.edges = new List<Edge>();
-            this.faces = new List<Face>();
+            this.triangles = new List<Triangle>();
         }
 
         public void AddEdge(Edge e)
@@ -24,9 +24,9 @@ namespace Subdiv
             edges.Add(e);
         }
 
-        public void AddFace(Face f)
+        public void AddTriangle(Triangle f)
         {
-            faces.Add(f);
+            triangles.Add(f);
         }
 
     }

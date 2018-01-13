@@ -13,13 +13,13 @@ namespace Subdiv
     {
         List<Vertex> vertices;
         List<Edge> edges;
-        public List<Face> faces;
+        public List<Triangle> triangles;
 
         public Model()
         {
             this.vertices = new List<Vertex>();
             this.edges = new List<Edge>();
-            this.faces = new List<Face>();
+            this.triangles = new List<Triangle>();
         }
 
         public Model(Mesh source) : this()
@@ -40,11 +40,11 @@ namespace Subdiv
                 var e0 = GetEdge(edges, v0, v1);
                 var e1 = GetEdge(edges, v1, v2);
                 var e2 = GetEdge(edges, v2, v0);
-                var f = new Face(v0, v1, v2, e0, e1, e2);
+                var f = new Triangle(v0, v1, v2, e0, e1, e2);
 
-                faces.Add(f);
-                v0.AddFace(f); v1.AddFace(f); v2.AddFace(f);
-                e0.AddFace(f); e1.AddFace(f); e2.AddFace(f);
+                this.triangles.Add(f);
+                v0.AddTriangle(f); v1.AddTriangle(f); v2.AddTriangle(f);
+                e0.AddTriangle(f); e1.AddTriangle(f); e2.AddTriangle(f);
             }
         }
 
@@ -62,7 +62,7 @@ namespace Subdiv
             return ne;
         }
 
-        public void AddFace(Vertex v0, Vertex v1, Vertex v2)
+        public void AddTriangle(Vertex v0, Vertex v1, Vertex v2)
         {
             if (!vertices.Contains(v0)) vertices.Add(v0);
             if (!vertices.Contains(v1)) vertices.Add(v1);
@@ -71,11 +71,11 @@ namespace Subdiv
             var e0 = GetEdge(v0, v1);
             var e1 = GetEdge(v1, v2);
             var e2 = GetEdge(v2, v0);
-            var f = new Face(v0, v1, v2, e0, e1, e2);
+            var f = new Triangle(v0, v1, v2, e0, e1, e2);
 
-            this.faces.Add(f);
-            v0.AddFace(f); v1.AddFace(f); v2.AddFace(f);
-            e0.AddFace(f); e1.AddFace(f); e2.AddFace(f);
+            this.triangles.Add(f);
+            v0.AddTriangle(f); v1.AddTriangle(f); v2.AddTriangle(f);
+            e0.AddTriangle(f); e1.AddTriangle(f); e2.AddTriangle(f);
         }
 
         Edge GetEdge(Vertex v0, Vertex v1)
@@ -96,13 +96,13 @@ namespace Subdiv
         public Mesh Build(bool weld = false)
         {
             var mesh = new Mesh();
-            var triangles = new int[faces.Count * 3];
+            var triangles = new int[this.triangles.Count * 3];
 
             if(weld)
             {
-                for (int i = 0, n = faces.Count; i < n; i++)
+                for (int i = 0, n = this.triangles.Count; i < n; i++)
                 {
-                    var f = faces[i];
+                    var f = this.triangles[i];
                     triangles[i * 3] = vertices.IndexOf(f.v0);
                     triangles[i * 3 + 1] = vertices.IndexOf(f.v1);
                     triangles[i * 3 + 2] = vertices.IndexOf(f.v2);
@@ -110,10 +110,10 @@ namespace Subdiv
                 mesh.vertices = vertices.Select(v => v.p).ToArray();
             } else
             {
-                var vertices = new Vector3[faces.Count * 3];
-                for (int i = 0, n = faces.Count; i < n; i++)
+                var vertices = new Vector3[this.triangles.Count * 3];
+                for (int i = 0, n = this.triangles.Count; i < n; i++)
                 {
-                    var f = faces[i];
+                    var f = this.triangles[i];
                     int i0 = i * 3, i1 = i * 3 + 1, i2 = i * 3 + 2;
                     vertices[i0] = f.v0.p;
                     vertices[i1] = f.v1.p;

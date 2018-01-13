@@ -8,42 +8,43 @@ using UnityEngine.Rendering;
 namespace Subdiv
 {
 
-    public class GPUSubdivisionSurface : MonoBehaviour {
+    public class GPUSubdivisionSurface {
 
-        [SerializeField] protected ComputeShader subdivCompute;
-        [SerializeField, Range(1, 5)] protected int details = 1;
+        #region Compute shader keys
 
-        void Start()
+        protected const string kKernelKey = "Subdivide";
+        protected const string kVertexBufferKey = "_VertexBuffer", kEdgeBufferKey = "_EdgeBuffer", kTriangleBufferKey = "_TriangleBuffer";
+        protected const string kVertexCountKey = "_VertexCount", kEdgeCountKey = "_EdgeCount", kTriangleCountKey = "_TriangleCount";
+        protected const string kSubdivBufferKey = "_SubdivBuffer", kSubdivCountKey = "_SubdivCount"; 
+
+        #endregion
+
+        // subdivCompute : SubdivisionSurface.compute
+        public static Mesh Subdivide(ComputeShader subdivCompute, Mesh mesh, int details = 1, bool weld = false)
         {
-            var filter = GetComponent<MeshFilter>();
-            var source = filter.mesh;
-            var mesh = Subdivide(SubdivisionSurface.Weld(source, float.Epsilon, source.bounds.size.x), details);
-            filter.sharedMesh = mesh;
-        }
+            var kernel = new Kernel(subdivCompute, kKernelKey);
 
-        public Mesh Subdivide(Mesh mesh, int details = 1, bool weld = false)
-        {
-            var kernel = new Kernel(subdivCompute, "Subdivide");
+            var data = new GPUSubdivData(mesh);
 
             for (int i = 0; i < details; i++) {
-                var data = new GPUSubdivData(mesh);
-
-                subdivCompute.SetBuffer(kernel.Index, "_VertexBuffer", data.VertexBuffer);
-                subdivCompute.SetBuffer(kernel.Index, "_EdgeBuffer", data.EdgeBuffer);
-                subdivCompute.SetBuffer(kernel.Index, "_TriangleBuffer", data.TriangleBuffer);
-                subdivCompute.SetBuffer(kernel.Index, "_SubdivBuffer", data.SubdivBuffer);
-                subdivCompute.SetInt("_VertexCount", data.VertexBuffer.count);
-                subdivCompute.SetInt("_EdgeCount", data.EdgeBuffer.count);
-                subdivCompute.SetInt("_TriangleCount", data.TriangleBuffer.count);
-                subdivCompute.SetInt("_SubdivCount", data.SubdivBuffer.count);
+                subdivCompute.SetBuffer(kernel.Index, kVertexBufferKey, data.VertexBuffer);
+                subdivCompute.SetBuffer(kernel.Index, kEdgeBufferKey, data.EdgeBuffer);
+                subdivCompute.SetBuffer(kernel.Index, kTriangleBufferKey, data.TriangleBuffer);
+                subdivCompute.SetBuffer(kernel.Index, kSubdivBufferKey, data.SubdivBuffer);
+                subdivCompute.SetInt(kVertexCountKey, data.VertexBuffer.count);
+                subdivCompute.SetInt(kEdgeCountKey, data.EdgeBuffer.count);
+                subdivCompute.SetInt(kTriangleCountKey, data.TriangleBuffer.count);
+                subdivCompute.SetInt(kSubdivCountKey, data.SubdivBuffer.count);
 
                 subdivCompute.Dispatch(kernel.Index, data.SubdivBuffer.count / (int)kernel.ThreadX + 1, (int)kernel.ThreadY, (int)kernel.ThreadZ);
 
-                // CAUTION:
-                //      Need to build a weld mesh to subdivide in next detail
-                mesh = data.Build((i != details - 1) || weld);
-                data.Dispose();
+                if(i != details - 1) {
+                    data = data.Next();
+                }
             }
+
+            mesh = data.Build(weld);
+            data.Dispose();
 
             return mesh;
         }
