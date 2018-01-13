@@ -3,11 +3,11 @@ unity-subdivision-surface
 
 Loop subdivision surface algorithm implementation in Unity.
 
-![Heads](https://raw.githubusercontent.com/mattatz/unity-voxel/master/Captures/Heads.png)
+![Heads](https://raw.githubusercontent.com/mattatz/unity-subdivision-surface/master/Captures/Heads.png)
 
 From left to right, original mesh, subdivided 1 time, subdivided 2times model.
 
-![Cubes](https://raw.githubusercontent.com/mattatz/unity-voxel/master/Captures/Cubes.png)
+![Cubes](https://raw.githubusercontent.com/mattatz/unity-subdivision-surface/master/Captures/Cubes.png)
 
 ## Loop subdivision surface
 
