@@ -21,7 +21,7 @@ From left to right, original mesh, subdivided 1 time, subdivided 2times model.
 var filter = GetComponent<MeshFilter>();
 
 // Require a mesh to weld (require to remove duplicated vertices)
-var welded = SubdivisionSurface.Weld(filter.mesh, float.Epsilon, source.bounds.size.x);
+var welded = SubdivisionSurface.Weld(filter.mesh, float.Epsilon, filter.mesh.bounds.size.x);
 
 var mesh = SubdivisionSurface.Subdivide(
   welded,   // a welded mesh
