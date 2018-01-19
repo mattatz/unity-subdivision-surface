@@ -27,7 +27,7 @@ namespace Subdiv
             var points = source.vertices;
             for (int i = 0, n = points.Length; i < n; i++)
             {
-                var v = new Vertex(points[i]);
+                var v = new Vertex(points[i], i);
                 vertices.Add(v);
             }
 

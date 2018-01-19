@@ -18,6 +18,13 @@ namespace Subdiv
 
         public static Mesh Subdivide(Mesh source, int details = 1, bool weld = false)
         {
+            var model = Subdivide(source, details);
+            var mesh = model.Build(weld);
+            return mesh;
+        }
+
+        public static Model Subdivide(Mesh source, int details = 1)
+        {
             var model = new Model(source);
             var divider = new SubdivisionSurface();
 
@@ -25,8 +32,7 @@ namespace Subdiv
                 model = divider.Divide(model);
             }
 
-            var mesh = model.Build(weld);
-            return mesh;
+            return model;
         }
 
         public static Mesh Weld(Mesh mesh, float threshold, float bucketStep)
@@ -150,14 +156,15 @@ namespace Subdiv
 
             if(e.faces.Count != 2) {
                 // boundary case for edge
-                e.ept = new Vertex((e.a.p + e.b.p) * 0.5f);
+                var m = (e.a.p + e.b.p) * 0.5f;
+                e.ept = new Vertex(m, e.a.index);
             } else
             {
                 const float alpha = 3f / 8f;
                 const float beta = 1f / 8f;
                 var left = e.faces[0].GetOtherVertex(e);
                 var right = e.faces[1].GetOtherVertex(e);
-                e.ept = new Vertex((e.a.p + e.b.p) * alpha + (left.p + right.p) * beta);
+                e.ept = new Vertex((e.a.p + e.b.p) * alpha + (left.p + right.p) * beta, e.a.index);
             }
 
             return e.ept;
@@ -186,7 +193,7 @@ namespace Subdiv
                 var e1 = v.edges[1].GetOtherVertex(v);
                 const float k0 = (3f / 4f);
                 const float k1 = (1f / 8f);
-                v.updated = new Vertex(k0 * v.p + k1 * (e0.p + e1.p));
+                v.updated = new Vertex(k0 * v.p + k1 * (e0.p + e1.p), v.index);
             } else
             {
                 const float pi2 = Mathf.PI * 2f;
@@ -203,7 +210,7 @@ namespace Subdiv
                     np += alpha * adj.p;
                 }
 
-                v.updated = new Vertex(np);
+                v.updated = new Vertex(np, v.index);
             }
 
             return v.updated;

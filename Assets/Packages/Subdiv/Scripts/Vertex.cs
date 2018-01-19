@@ -12,9 +12,17 @@ namespace Subdiv
         public List<Triangle> triangles;
         public Vertex updated;
 
-        public Vertex(Vector3 p)
+        // reference index to original vertex
+        public int index;
+
+        public Vertex(Vector3 p) : this(p, -1)
+        {
+        }
+
+        public Vertex(Vector3 p, int index)
         {
             this.p = p;
+            this.index = index;
             this.edges = new List<Edge>();
             this.triangles = new List<Triangle>();
         }

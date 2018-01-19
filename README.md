@@ -14,6 +14,12 @@ From left to right, original mesh, subdivided 1 time, subdivided 2times model.
 > Loop subdivision surface is an approximating subdivision scheme developed by Charles Loop in 1987 for triangular meshes.
 > [wikipedia](https://en.wikipedia.org/wiki/Loop_subdivision_surface)
 
+## SubdivMorph
+
+![SubdivMorph](https://raw.githubusercontent.com/mattatz/unity-subdivision-surface/master/Captures/SubdivMorph.gif)
+
+SubdivMorph demo morph vertices between original and subdivided.
+
 ## Usage
 
 ```cs
